@@ -1,0 +1,3 @@
+**/*.pyc
+/biblio.bib
+/biblio_abbreviated.dat

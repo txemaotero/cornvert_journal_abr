@@ -1,0 +1,10 @@
+* Journal Titles Abbreviation
+  This repository contains python tools and data to abbreviate scientific journals
+  titles. There is also some tools to aply this conversion to all journal titles
+  found in a .bib file. This can be useful when references are extracted from other
+  tools like google scholar.
+
+** Data
+   The titles and abbreviations of journals are extracted from the web of
+   science (WOS) with the script [[file:data/data_mining.py][data_mining.py]] and saved in the in json format
+   in the file [[file:data/journal_names_abr.dat][journal_data.dat]].
