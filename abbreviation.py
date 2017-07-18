@@ -4,6 +4,8 @@
 
 import json
 import re
+import sys
+
 
 
 
@@ -13,17 +15,22 @@ class TitleAbbreviation(object):
 
     Attributes
     ----------
-    title_data_file : string (file name)
-        The path with the data of journal titles and abbreviations.
+    title_data_files : string (file name) or list of strings
+        The path with the data of journal titles and abbreviations. Or a list
+        with multiple paths.
     abbreviations : dictionary {string: string}
         A dictionary with the journal titles as keys and its abbreviations as
         values.
     """
-    def __init__(self, title_data_file):
+    def __init__(self, title_data_files):
         super(TitleAbbreviation, self).__init__()
-        self._title_data_file = title_data_file
-        with open(title_data_file) as f:
-            self._abbreviations = json.load(f)
+        if isinstance(title_data_files, str):
+            title_data_files = [title_data_files]
+        self._title_data_files = title_data_files
+        self._abbreviations = {}
+        for title_data_file in title_data_files:
+            with open(title_data_file) as f:
+                self._abbreviations.update(json.load(f))
         self._inv_abbreviations = {v: k for k, v in self._abbreviations.items()}
 
     def convert2abbreviation(self, title):
@@ -33,6 +40,8 @@ class TitleAbbreviation(object):
         title = title.title().strip()
         if title.startswith('The '):
             title = title[4:]
+        if '\&' in title:
+            title = title.replace('\&', u'&Amp;')
         try:
             return self._abbreviations[title]
         except KeyError:
@@ -108,3 +117,18 @@ class TitleAbbreviation(object):
     @property
     def inv_abbreviations(self):
         return self._inv_abbreviations
+
+
+
+
+
+def convert_bib(inp, out=None):
+    datas = ['/home/txema/github/cornvert_journal_abr/data/journal_names_abr.dat',
+             '/home/txema/github/cornvert_journal_abr/data/journal_names_abr_added.dat']
+    TitAbb = TitleAbbreviation(datas)
+    TitAbb.convert_bib(inp, out)
+
+
+if __name__=="__main__":
+    inp, out = sys.argv[1:3]
+    convert_bib(inp, out)
