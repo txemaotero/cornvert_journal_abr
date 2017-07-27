@@ -119,9 +119,6 @@ class TitleAbbreviation(object):
         return self._inv_abbreviations
 
 
-
-
-
 def convert_bib(inp, out=None):
     datas = ['/home/txema/github/cornvert_journal_abr/data/journal_names_abr.dat',
              '/home/txema/github/cornvert_journal_abr/data/journal_names_abr_added.dat']
