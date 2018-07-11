@@ -1,12 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
 import json
 import re
 import sys
-
-
+import os
 
 
 class TitleAbbreviation(object):
@@ -26,11 +25,11 @@ class TitleAbbreviation(object):
         super(TitleAbbreviation, self).__init__()
         if isinstance(title_data_files, str):
             title_data_files = [title_data_files]
-        self._title_data_files = title_data_files
+        self._title_data_file = title_data_files
         self._abbreviations = {}
         for title_data_file in title_data_files:
-            with open(title_data_file) as f:
-                self._abbreviations.update(json.load(f))
+            with open(title_data_file) as _file:
+                self._abbreviations.update(json.load(_file))
         self._inv_abbreviations = {v: k for k, v in self._abbreviations.items()}
 
     def convert2abbreviation(self, title):
@@ -52,7 +51,7 @@ class TitleAbbreviation(object):
                 return title
             if chek2:
                 return title+'.'
-            raise(KeyError('The input title is not in the data bank.'))
+            raise KeyError('The input title is not in the data bank.')
 
     def convert2title(self, abbreviation):
         """
@@ -62,7 +61,7 @@ class TitleAbbreviation(object):
         try:
             return self._inv_abbreviations[abb]
         except KeyError:
-            raise(KeyError('The input abbreviation is not in the data bank.'))
+            raise KeyError('The input abbreviation is not in the data bank.')
 
     def convert_bib(self, fbib, fout=None):
         """
@@ -80,27 +79,27 @@ class TitleAbbreviation(object):
             fout = fbib[:-4] + '_abbreviated.bib'
         changes = {'Abbreviated': set(),
                    'Not abbreviated': set()}
-        f = open(fbib)
-        g = open(fout, 'w')
-        for l in f:
-            if l.strip().startswith('journal'):
-                tit = re.findall('\{(.*?)\}', l)
+        _file = open(fbib)
+        _gfile = open(fout, 'w')
+        for line in _file:
+            if line.strip().startswith('journal'):
+                tit = re.findall('\{(.*?)\}', line)
                 try:
-                    t = tit[0]
-                    abb = self.convert2abbreviation(t)
-                    new_l = l.replace(t, abb)
-                    changes['Abbreviated'].add(t)
+                    title = tit[0]
+                    abb = self.convert2abbreviation(title)
+                    new_l = line.replace(title, abb)
+                    changes['Abbreviated'].add(title)
                 except IndexError:
                     raise(IOError(('The following journal line in the .bib'
-                                   'has a wrong format:\n{}').format(l)))
+                                   'has a wrong format:\n{}').format(line)))
                 except KeyError:
                     changes['Not abbreviated'].add(tit[0])
-                    new_l = l
-                g.write(new_l)
+                    new_l = line
+                _gfile.write(new_l)
             else:
-                g.write(l)
-        g.close()
-        f.close()
+                _gfile.write(line)
+        _gfile.close()
+        _file.close()
         print('The abbreviated titles are:\n')
         print('\t' + '\n\t'.join(changes['Abbreviated']) + '\n\n')
         print('The following titles were not found in the data bank:\n\t')
@@ -108,24 +107,38 @@ class TitleAbbreviation(object):
 
     @property
     def title_data_file(self):
+        """
+        Path with the abbreviations data.
+        """
         return self._title_data_file
 
     @property
     def abbreviations(self):
+        """
+        dict of str to str : Name of journal to abbr.
+        """
         return self._abbreviations
 
     @property
     def inv_abbreviations(self):
+        """
+        dict of str to str : Abbr to name of journal.
+        """
         return self._inv_abbreviations
 
 
 def convert_bib(inp, out=None):
-    datas = ['/home/txema/github/cornvert_journal_abr/data/journal_names_abr.dat',
-             '/home/txema/github/cornvert_journal_abr/data/journal_names_abr_added.dat']
-    TitAbb = TitleAbbreviation(datas)
-    TitAbb.convert_bib(inp, out)
+    """
+    Modify this function to find the path to journal_names.dat
+    """
+    home = os.path.expanduser('~')
+    rel_paths = ('github/cornvert_journal_abr/data/journal_names_abr.dat',
+                 'github/cornvert_journal_abr/data/journal_names_abr_added.dat')
+    datas = [os.path.join(home, rel_p) for rel_p in rel_paths]
+    titabb = TitleAbbreviation(datas)
+    titabb.convert_bib(inp, out)
 
 
-if __name__=="__main__":
-    inp, out = sys.argv[1:3]
-    convert_bib(inp, out)
+if __name__ == "__main__":
+    INP, OUT = sys.argv[1:3]
+    convert_bib(INP, OUT)

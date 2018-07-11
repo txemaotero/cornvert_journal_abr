@@ -9,26 +9,46 @@ import requests
 import BeautifulSoup
 
 
-# Se leen los tipos y se almacenan en un diccionario con el indice de clave
-pages = ['0-9'] + list(string.ascii_uppercase)
-url_base = 'https://images.webofknowledge.com/WOKRS520B4.1/help/WOS/{}_abrvjt.html'
+class ExtracrAbbreviations(object):
+    """
+    This class manages the journal abbreviations mining.
+    """
+    BASE_URLS = ('https://images.webofknowledge.com/WOKRS520B4.1/help/WOS/{}_abrvjt.html'.format(i)
+                 for i in ['0-9'] + list(string.ascii_uppercase))
+    # Avoid, PRL B.
+    EXPRESION = re.compile('[a-zA-Z]{2,}$')
+    def __init__(self):
+        self.session = requests.session()
+        self.abbreviations = {}
+        for url in self.BASE_URLS:
+            print(f'Mining: "{url}"')
+            self.mine_one_page(url)
 
-dic = {}
-expresion = re.compile('[a-zA-Z]{2,}$')
-for i in pages:
-    print('Extracting {}'.format(i))
-    url = url_base.format(i)
-    session = requests.session()
-    req = session.get(url)
-    doc = BeautifulSoup.BeautifulSoup(req.content)
-    titles = doc.findAll('dt')
-    abbr = doc.findAll('dd')
-    for t, a in zip(titles, abbr):
-        tit = t.text.title()
-        abb = a.text.title().replace(' ', '. ')
-        if expresion.findall(abb):
+    def mine_one_page(self, url):
+        """
+        Extract the abbreviations from one url.
+        """
+        content = BeautifulSoup.BeautifulSoup(self.session.get(url))
+        titles = content.findAll('dt')
+        abbrs = content.findAll('dd')
+        assert len(titles) == len(abbrs)
+        for title, abbr in zip(titles, abbrs):
+            self._add_title_abbr(title.text, abbr.text)
+
+    def _add_title_abbr(self, title, abbr):
+        tit = title.title()
+        abb = abbr.title()
+        if title == abbr:
+            self.abbreviations[tit] = abb
+            return
+        abb = abb.replace(' ', '. ')
+        if self.EXPRESION.findall(abb):
             abb += '.'
-        dic[tit] = abb
+        self.abbreviations[tit] = abb
 
-with open('journal_names_abr.dat', 'w') as f:
-    json.dump(dic, f, indent=4, sort_keys=True)
+    def save_abbr(self, fname='journal_names_abr.dat'):
+        """
+        Writes a .json with the mined abbreviations.
+        """
+        with open(fname, 'w') as _file:
+            json.dump(self.abbreviations, _file, indent=4, sort_keys=True)
