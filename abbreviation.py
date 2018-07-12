@@ -7,6 +7,11 @@ import re
 import sys
 import os
 
+try:
+    from titlecase import titlecase
+except ImportError:
+    raise ImportError('Please install titlecase (pip install titlecase)')
+
 
 class TitleAbbreviation(object):
     """
@@ -36,7 +41,7 @@ class TitleAbbreviation(object):
         """
         Converts a title in an abbreviation if its possible.
         """
-        title = title.title().strip()
+        title = titlecase(title).strip()
         if title.startswith('The '):
             title = title[4:]
         if '\&' in title:
@@ -45,11 +50,9 @@ class TitleAbbreviation(object):
             return self._abbreviations[title]
         except KeyError:
             # Check if title is already an abbreviation
-            chek1 = title in self._inv_abbreviations
-            chek2 = title+'.' in self._inv_abbreviations
-            if chek1:
+            if title in self._inv_abbreviations:
                 return title
-            if chek2:
+            if title + '.' in self._inv_abbreviations:
                 return title+'.'
             raise KeyError('The input title is not in the data bank.')
 
@@ -57,7 +60,7 @@ class TitleAbbreviation(object):
         """
         Converts a title in an abbreviation if its possible.
         """
-        abb = abbreviation.title().strip()
+        abb = titlecase(abbreviation).strip()
         try:
             return self._inv_abbreviations[abb]
         except KeyError:
@@ -90,8 +93,8 @@ class TitleAbbreviation(object):
                     new_l = line.replace(title, abb)
                     changes['Abbreviated'].add(title)
                 except IndexError:
-                    raise(IOError(('The following journal line in the .bib'
-                                   'has a wrong format:\n{}').format(line)))
+                    raise IOError(('The following journal line in the .bib'
+                                   'has a wrong format:\n{}').format(line))
                 except KeyError:
                     changes['Not abbreviated'].add(tit[0])
                     new_l = line
