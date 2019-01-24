@@ -134,10 +134,10 @@ def convert_bib(inp, out=None):
     """
     Modify this function to find the path to journal_names.dat
     """
-    home = os.path.expanduser('~')
-    rel_paths = ('github/cornvert_journal_abr/data/journal_names_abr.dat',
-                 'github/cornvert_journal_abr/data/journal_names_abr_added.dat')
-    datas = [os.path.join(home, rel_p) for rel_p in rel_paths]
+    current = os.path.dirname(os.path.abspath(__file__))
+    rel_paths = ('data/journal_names_abr.dat',
+                 'data/journal_names_abr_added.dat')
+    datas = [os.path.join(current, rel_p) for rel_p in rel_paths]
     titabb = TitleAbbreviation(datas)
     titabb.convert_bib(inp, out)
 
