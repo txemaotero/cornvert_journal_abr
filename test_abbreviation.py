@@ -13,12 +13,12 @@ class TitleAbbreviationTest(unittest.TestCase):
     def test_convert2abbreviation(self):
         k = "Journal Of Chemical Physics"
         v = "J. Chem. Phys."
-        self.assertEqual(self._TitAbb.convert2abbreviation(k), v)
-        self.assertEqual(self._TitAbb.convert2title(v), k)
+        self.assertEqual(self._TitAbb.convert_to_abbreviation(k), v)
+        self.assertEqual(self._TitAbb.convert_to_title(v), k)
         k = "ChemPhysChem"
         v = "ChemPhysChem"
-        self.assertEqual(self._TitAbb.convert2abbreviation(k), v)
-        self.assertEqual(self._TitAbb.convert2title(v), k)
+        self.assertEqual(self._TitAbb.convert_to_abbreviation(k), v)
+        self.assertEqual(self._TitAbb.convert_to_title(v), k)
 
 
 if __name__=="__main__":

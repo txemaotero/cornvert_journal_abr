@@ -1,15 +1,18 @@
 {
-    "Journal Of Physics: Condensed Matter": "J. Phys. Condens. Matter", 
+    "Journal of Physics: Condensed Matter": "J. Phys. Condens. Matter", 
     "Softwarex": "SoftwareX", 
-    "Journal Of Physical Chemistry Letters": "J. Phys. Chem. Lett.",
+    "Journal of Physical Chemistry Letters": "J. Phys. Chem. Lett.",
     "Proteins: Structure, Function, And Bioinformatics": "Proteins: Struct., Funct., Bioinf.",
     "Peptide Science": "Pept. Sci.",
-    "Journal Of Cheminformatics": "J. Cheminform.",
-    "Journal Of Molecular Structure: Theochem": "J. Mol. Struc. THEOCHEM",
+    "Journal of Cheminformatics": "J. Cheminform.",
+    "Journal of Molecular Structure: Theochem": "J. Mol. Struc. THEOCHEM",
     "Frontiers In Pharmacology": "Front. Pharmacol.",
-    "Proceedings Of The National Academy Of Sciences": "Proc. Natl. Acad. Sci.",
+    "Proceedings of The National Academy Of Sciences": "Proc. Natl. Acad. Sci.",
     "Scientific Reports": "Sci. Rep.",
-    "Journal Of Materials Chemistry B": "J. Mater. Chem. B",
+    "Journal of Materials Chemistry B": "J. Mater. Chem. B",
     "Biomed Research International": "Biomed. Res. Int.",
-    "Biochimica Et Biophysica Acta (Bba)-Molecular Cell Research": "BBA-Mol. Cell. Res."
+    "Biochimica ot Biophysica Acta (Bba)-Molecular Cell Research": "BBA-Mol. Cell. Res.",
+	"Chemphyschem": "Chem. Phys. Chem.",
+    "Journal De Chimie Physique Et De Physico Chimie Biologique": "J. chim. Phys. Phys.-Chim. Biol.",
+	"Journal of the Chemical Society, Chemical Communications": "J. Chem. Soc., Chem. Commun."
 }
